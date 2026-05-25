@@ -10,7 +10,7 @@ Contiene:
   Script de la Base de Datos.
 
 Realizado por:
-  Erick Alfredo Ramírez Lozoya
-  Diana Stefanya Saldaña Mendoza
-  Valeria Paola Medina Ramírez
+  Erick Alfredo Ramírez Lozoya;
+  Diana Stefanya Saldaña Mendoza;
+  Valeria Paola Medina Ramírez.
   
