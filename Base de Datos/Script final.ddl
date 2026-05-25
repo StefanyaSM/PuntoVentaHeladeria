@@ -1,0 +1,134 @@
+DROP TABLE Sundae;
+DROP TABLE Order_Item;
+DROP TABLE Ticket;
+DROP TABLE Card;
+DROP TABLE Cash;
+DROP TABLE Payment;
+DROP TABLE Employee;
+DROP TABLE Store;
+DROP TABLE Customers;
+DROP TABLE Menu_Item;
+
+
+
+CREATE TABLE Payment
+(
+	PaymentID            NUMBER NOT NULL ,
+	Is_Cash              NUMBER(1) NULL ,
+	Amount               NUMBER(10,2) NULL ,
+CONSTRAINT  XPKPayment PRIMARY KEY (PaymentID)
+);
+
+
+
+CREATE TABLE Card
+(
+	PaymentID            NUMBER NOT NULL ,
+	CardNum              NUMBER NULL ,
+CONSTRAINT  XPKCard PRIMARY KEY (PaymentID),
+FOREIGN KEY (PaymentID) REFERENCES Payment(PaymentID) ON DELETE CASCADE
+);
+
+
+
+CREATE TABLE Cash
+(
+	PaymentID            NUMBER NOT NULL ,
+	Received             NUMBER NULL ,
+	Change               NUMBER NULL ,
+CONSTRAINT  XPKCash PRIMARY KEY (PaymentID),
+FOREIGN KEY (PaymentID) REFERENCES Payment(PaymentID) ON DELETE CASCADE
+);
+
+
+
+CREATE TABLE Store
+(
+	StoreID              NUMBER NOT NULL ,
+	StoreName            VARCHAR2(50) NOT NULL ,
+	PostalCode           VARCHAR2(10) NULL ,
+	City                 VARCHAR2(50) NULL ,
+	Address              VARCHAR2(100) NULL ,
+CONSTRAINT  XPKStore PRIMARY KEY (StoreID)
+);
+
+
+
+CREATE TABLE Employee
+(
+	EmployeeID           NUMBER NOT NULL ,
+	Name                 VARCHAR2(50) NOT NULL ,
+	JobPosition          VARCHAR2(50) NULL ,
+	StoreID              NUMBER NULL ,
+CONSTRAINT  XPKEmployee PRIMARY KEY (EmployeeID),
+CONSTRAINT FK_Employee_Store FOREIGN KEY (StoreID) REFERENCES Store (StoreID) ON DELETE SET NULL
+);
+
+
+
+CREATE TABLE Customers
+(
+	CustomerID           NUMBER NOT NULL ,
+	Name                 VARCHAR2(50) NOT NULL ,
+CONSTRAINT  XPKCustomers PRIMARY KEY (CustomerID)
+);
+
+
+
+CREATE TABLE Ticket
+(
+	TicketID             NUMBER NOT NULL ,
+	OrderDate            DATE NULL ,
+	StoreID              NUMBER NULL ,
+	EmployeeID           NUMBER NULL ,
+	CustomerID           NUMBER NULL ,
+	PaymentID            NUMBER NULL ,
+CONSTRAINT  XPKTicket PRIMARY KEY (TicketID),
+CONSTRAINT FK_Ticket_Store FOREIGN KEY (StoreID) REFERENCES Store (StoreID) ON DELETE SET NULL,
+CONSTRAINT FK_Ticket_Employee FOREIGN KEY (EmployeeID) REFERENCES Employee (EmployeeID) ON DELETE SET NULL,
+CONSTRAINT FK_Ticket_Customer FOREIGN KEY (CustomerID) REFERENCES Customers (CustomerID) ON DELETE SET NULL,
+CONSTRAINT FK_Ticket_Payment FOREIGN KEY (PaymentID) REFERENCES Payment (PaymentID) ON DELETE SET NULL
+);
+
+
+
+CREATE TABLE Menu_Item
+(
+	MenuItemID           NUMBER NOT NULL ,
+	Name                 VARCHAR2(50) NOT NULL ,
+	Price                NUMBER(10,2) NULL ,
+	Description          VARCHAR2(200) NULL ,
+CONSTRAINT  XPKMenu_Item PRIMARY KEY (MenuItemID)
+);
+
+
+
+CREATE TABLE Order_Item
+(
+	OrderItemID          NUMBER NOT NULL ,
+	Quantity             NUMBER NULL ,
+	Comments             VARCHAR2(200) NULL ,
+	TicketID             NUMBER NULL ,
+	MenuItemID           NUMBER NULL ,
+CONSTRAINT  XPKOrder_Item PRIMARY KEY (OrderItemID),
+CONSTRAINT FK_OrderItem_Ticket FOREIGN KEY (TicketID) REFERENCES Ticket (TicketID) ON DELETE SET NULL,
+CONSTRAINT FK_OrderItem_MenuItem FOREIGN KEY (MenuItemID) REFERENCES Menu_Item (MenuItemID) ON DELETE SET NULL
+);
+
+
+
+CREATE TABLE Sundae
+(
+	CustomID             NUMBER NOT NULL ,
+	Syrup                VARCHAR2(50) NULL ,
+	WhippedCream         NUMBER(1) NULL ,
+	Mixeable             VARCHAR2(50) NULL ,
+	SauceTopping         VARCHAR2(50) NULL ,
+	PlaceableTopping     VARCHAR2(50) NULL ,
+	PourableTopping      VARCHAR2(50) NULL ,
+	MenuItemID           NUMBER NULL ,
+CONSTRAINT  XPKSundae PRIMARY KEY (CustomID),
+CONSTRAINT FK_Sundae_MenuItem FOREIGN KEY (MenuItemID) REFERENCES Menu_Item (MenuItemID) ON DELETE SET NULL
+);
+
+commit;
